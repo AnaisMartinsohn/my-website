@@ -257,6 +257,7 @@ async function fetchTurbidity(){
     } catch(err){
         console.error("Error fetching turbidity:", err);
     }
+}
 
 // Fetch every 15 seconds
 fetchTurbidity();
@@ -267,6 +268,7 @@ setInterval(fetchTurbidity, 15000);
 
 </body>
 </html>
+
 
 
 
