@@ -169,7 +169,7 @@ p {
 
 <div class="info-card" id="turbidity-card">
     <h2>Lake Turbidity</h2>
-    <p>Current turbidity: <strong>id="turbidity"</strong></p>
+    <p>Current turbidity: <strong id="turbidity">--</strong></p>
     <p class="evolution-placeholder">[Evolution over time will be added here]</p>
 </div>
 
@@ -243,7 +243,7 @@ rectangles.forEach(rect=>{
 });
    // ---------- LIVE TURBIDITY FROM THINGSPEAK ----------
 const channelID = "3265957";       // Replace with your Thingspeak channel ID
-const readAPIKey = 1V357JHI2S2755RP";    // Replace with your Thingspeak read key
+const readAPIKey = "1V357JHI2S2755RP"; 
 
 async function fetchTurbidity(){
     try {
@@ -268,6 +268,7 @@ setInterval(fetchTurbidity, 15000);
 
 </body>
 </html>
+
 
 
 
