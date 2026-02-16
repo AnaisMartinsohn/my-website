@@ -186,88 +186,110 @@ p {
 </div>
 
 <script>
-const frog = document.getElementById("frog");
-let currentEyes = "eo", currentMouth = "mc";
-const basePath = "images/sargouset/";
-function updateFrame(){ frog.src = basePath + currentEyes + "_" + currentMouth + ".png"; }
-function blink(){
-    const sequence = ["esc","ec","esc"]; let i=0;
-    const blinkInterval=setInterval(()=>{ currentEyes=sequence[i]; updateFrame(); i++;
-        if(i>=sequence.length){ clearInterval(blinkInterval); currentEyes="eo"; updateFrame(); }
-    },100);
-}
-setInterval(()=>{ blink(); },4000+Math.random()*3000);
+document.addEventListener("DOMContentLoaded", function() {
 
-let talkingInterval, talkCycles=0;
-function startTalking(){
-    const mouths=["mc","mso","mo","mso"]; let i=0; talkCycles=0;
-    talkingInterval=setInterval(()=>{
-        currentMouth=mouths[i]; updateFrame(); i=(i+1)%mouths.length;
-        if(i===0) talkCycles++;
-        if(talkCycles>=10) stopTalking();
-    },120);
-}
-function stopTalking(){ clearInterval(talkingInterval); currentMouth="mc"; updateFrame();}
-startTalking(); setInterval(()=>{ startTalking(); },7000);
+  // 🐸 Sargouset animation
+  const frog = document.getElementById("frog");
+  let currentEyes = "eo", currentMouth = "mc";
+  const basePath = "images/sargouset/";
 
-// Speech bubble
-const messages = ["Hi! I'm Sargouset, your guide around the lake's health.","Click on a lilypad to see how the lake is doing!"];
-let messageIndex=0;
-const speechText=document.getElementById("speech-text");
-document.getElementById("speech-next").addEventListener("click",()=>{
-    messageIndex++;
-    if(messageIndex<messages.length){ speechText.textContent=messages[messageIndex]; }
-    else{ document.getElementById("speech-container").style.display="none"; }
-});
+  function updateFrame(){ frog.src = basePath + currentEyes + "_" + currentMouth + ".png"; }
 
-// 🔹 Lilypad click shows panel + changes Sargouset info
-const rectangles=document.querySelectorAll(".rectangle");
-const parameterInfo = {
-    temperature: "The temperature shows how warm the lake is. Too warm, fish struggle to breathe; too cold, plants grow slowly.",
-    turbidity: "Turbidity shows how clear or cloudy the water is. Very cloudy water makes it harder for plants and animals to thrive.",
-    ph: "pH defines the lake's acidity. Life prefers water that is neither too acidic nor too basic.",
-    conductivity: "Conductivity measures dissolved minerals. Sudden changes can indicate unusual substances in the water."
-};
+  function blink(){
+      const sequence = ["esc","ec","esc"]; let i=0;
+      const blinkInterval = setInterval(()=>{ 
+          currentEyes = sequence[i]; 
+          updateFrame(); 
+          i++;
+          if(i>=sequence.length){ 
+              clearInterval(blinkInterval); 
+              currentEyes = "eo"; 
+              updateFrame(); 
+          }
+      }, 100);
+  }
+  setInterval(()=>{ blink(); }, 4000 + Math.random()*3000);
 
-rectangles.forEach(rect=>{
-    rect.addEventListener("click",()=>{
-        const type=rect.dataset.type;
-        // Hide all panels
-        document.querySelectorAll(".info-card").forEach(card=>card.style.display="none");
-        // Show selected panel
-        document.getElementById(`${type}-card`).style.display="block";
-        // Change Sargouset speech
-        speechText.textContent = parameterInfo[type];
-        document.getElementById("speech-container").style.display="flex"; // make sure it's visible
-    });
-});
-   // ---------- LIVE TURBIDITY FROM THINGSPEAK ----------
-const channelID = "3265957";       // Replace with your Thingspeak channel ID
-const readAPIKey = "1V357JHI2S2755RP"; 
+  let talkingInterval, talkCycles=0;
+  function startTalking(){
+      const mouths=["mc","mso","mo","mso"]; let i=0; talkCycles=0;
+      talkingInterval = setInterval(()=>{
+          currentMouth = mouths[i]; 
+          updateFrame(); 
+          i=(i+1)%mouths.length;
+          if(i===0) talkCycles++;
+          if(talkCycles>=10) stopTalking();
+      }, 120);
+  }
+  function stopTalking(){ clearInterval(talkingInterval); currentMouth="mc"; updateFrame(); }
+  startTalking(); 
+  setInterval(()=>{ startTalking(); }, 7000);
 
-async function fetchTurbidity(){
-    try {
-        const response = await fetch(`https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&results=1`);
-        const data = await response.json();
-        const last = data.feeds[0];
-        if(last){
-            // Update only turbidity
-            document.getElementById("turbidity").textContent = last.field1;
-        }
-    } catch(err){
-        console.error("Error fetching turbidity:", err);
-    }
-}
+  // 🗨️ Sargouset speech
+  const messages = [
+      "Hi! I'm Sargouset, your guide around the lake's health.",
+      "Click on a lilypad to see how the lake is doing!"
+  ];
+  let messageIndex = 0;
+  const speechText = document.getElementById("speech-text");
+  document.getElementById("speech-next").addEventListener("click",()=>{
+      messageIndex++;
+      if(messageIndex < messages.length){
+          speechText.textContent = messages[messageIndex];
+      } else {
+          document.getElementById("speech-container").style.display = "none";
+      }
+  });
 
-// Fetch every 15 seconds
-fetchTurbidity();
-setInterval(fetchTurbidity, 15000);
+  // 🌿 Lilypad clicks
+  const rectangles = document.querySelectorAll(".rectangle");
+  const parameterInfo = {
+      temperature: "The temperature shows how warm the lake is. Too warm, fish struggle to breathe; too cold, plants grow slowly.",
+      turbidity: "Turbidity shows how clear or cloudy the water is. Very cloudy water makes it harder for plants and animals to thrive.",
+      ph: "pH defines the lake's acidity. Life prefers water that is neither too acidic nor too basic.",
+      conductivity: "Conductivity measures dissolved minerals. Sudden changes can indicate unusual substances in the water."
+  };
 
+  rectangles.forEach(rect => {
+      rect.addEventListener("click", ()=>{
+          const type = rect.dataset.type;
+          // Hide all info cards
+          document.querySelectorAll(".info-card").forEach(card => card.style.display = "none");
+          // Show selected card
+          document.getElementById(`${type}-card`).style.display = "block";
+          // Update speech
+          speechText.textContent = parameterInfo[type];
+          document.getElementById("speech-container").style.display = "flex";
+      });
+  });
 
+  // 🌊 Optional: Thingspeak turbidity (doesn't interfere with lilypad clicks)
+  const channelID = "3265957";
+  const readAPIKey = "1V357JHI2S2755RP";
+
+  async function fetchTurbidity(){
+      try {
+          const response = await fetch(`https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&results=1`);
+          const data = await response.json();
+          const last = data.feeds[0];
+          if(last){
+              document.getElementById("turbidity").textContent = last.field1;
+          }
+      } catch(err){
+          console.error("Error fetching turbidity:", err);
+      }
+  }
+
+  fetchTurbidity();
+  setInterval(fetchTurbidity, 15000);
+
+}); // end DOMContentLoaded
 </script>
+
 
 </body>
 </html>
+
 
 
 
