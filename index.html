@@ -140,7 +140,7 @@ p {
 </header>
 
 <!-- 🐸 SARGOUSET -->
-<img id="frog" src="images/sargouset/eo_mc.png" alt="Sargouset">
+<img id="frog" src="images/sargouset/eo_mc.PNG" alt="Sargouset">
 
 <!-- 🗨️ SARGOUSET SPEECH -->
 <div class="speech-container" id="speech-container">
@@ -189,7 +189,7 @@ p {
 const frog = document.getElementById("frog");
 let currentEyes = "eo", currentMouth = "mc";
 const basePath = "images/sargouset/";
-function updateFrame(){ frog.src = basePath + currentEyes + "_" + currentMouth + ".png"; }
+function updateFrame(){ frog.src = basePath + currentEyes + "_" + currentMouth + ".PNG"; }
 function blink(){
     const sequence = ["esc","ec","esc"]; let i=0;
     const blinkInterval=setInterval(()=>{ currentEyes=sequence[i]; updateFrame(); i++;
@@ -245,4 +245,5 @@ rectangles.forEach(rect=>{
 
 </body>
 </html>
+
 
