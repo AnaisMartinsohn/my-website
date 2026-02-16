@@ -169,7 +169,7 @@ p {
 
 <div class="info-card" id="turbidity-card">
     <h2>Lake Turbidity</h2>
-    <p>Current turbidity: <strong>18.5</strong></p>
+    <p>Current turbidity: <strong>id="turbidity"</strong></p>
     <p class="evolution-placeholder">[Evolution over time will be added here]</p>
 </div>
 
@@ -241,36 +241,34 @@ rectangles.forEach(rect=>{
         document.getElementById("speech-container").style.display="flex"; // make sure it's visible
     });
 });
-    // ---------- LIVE SENSOR DATA FROM THINGSPEAK ----------
-    const channelID = "YOUR_CHANNEL_ID";       // Replace with your Thingspeak channel ID
-    const readAPIKey = "YOUR_READ_API_KEY";    // Replace with your Thingspeak read key
-    const fields = ["temperature","ph","turbidity","conductivity"];
+   // ---------- LIVE TURBIDITY FROM THINGSPEAK ----------
+const channelID = "3265957";       // Replace with your Thingspeak channel ID
+const readAPIKey = 1V357JHI2S2755RP";    // Replace with your Thingspeak read key
 
-    async function fetchSensorData(){
-        try {
-            const response = await fetch(`https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&results=1`);
-            const data = await response.json();
-            const last = data.feeds[0];
-            if(last){
-                document.getElementById("temperature").textContent = last.field1 + " °C";
-                document.getElementById("ph").textContent = last.field2;
-                document.getElementById("turbidity").textContent = last.field3;
-                document.getElementById("conductivity").textContent = last.field4;
-            }
-        } catch(err){
-            console.error("Error fetching sensor data:", err);
+async function fetchTurbidity(){
+    try {
+        const response = await fetch(`https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&results=1`);
+        const data = await response.json();
+        const last = data.feeds[0];
+        if(last){
+            // Update only turbidity
+            document.getElementById("turbidity").textContent = last.field1;
         }
+    } catch(err){
+        console.error("Error fetching turbidity:", err);
     }
+}
 
-    // Fetch every 15 seconds
-    fetchSensorData();
-    setInterval(fetchSensorData, 15000);
-});
+// Fetch every 15 seconds
+fetchTurbidity();
+setInterval(fetchTurbidity, 15000);
+
 
 </script>
 
 </body>
 </html>
+
 
 
 
