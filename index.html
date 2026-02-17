@@ -181,7 +181,7 @@ p {
 
 <div class="info-card" id="conductivity-card">
     <h2>Lake Conductivity</h2>
-    <p>Current conductivity: <strong>18.5</strong></p>
+    <p>Current conductivity: <strong id="conductivity">--</strong></p>
     <p class="evolution-placeholder">[Evolution over time will be added here]</p>
 </div>
 
@@ -264,8 +264,8 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   // 🌊 Optional: Thingspeak turbidity (doesn't interfere with lilypad clicks)
-  const channelID = "3265957";
-  const readAPIKey = "1V357JHI2S2755RP";
+  const channelID = "3267089";
+  const readAPIKey = "CDQS1YM4P9IEKXR3";
 
   async function fetchTurbidity(){
       try {
@@ -282,6 +282,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
   fetchTurbidity();
   setInterval(fetchTurbidity, 15000);
+    
+  async function fetchConductivity(){
+      try {
+          const response = await fetch(`https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&results=1`);
+          const data = await response.json();
+          const last = data.feeds[0];
+          if(last){
+              document.getElementById("conductivity").textContent = last.field2;
+          }
+      } catch(err){
+          console.error("Error fetching conductivity:", err);
+      }
+  }
+
+  fetchConductivity();
+  setInterval(fetchConductivity, 15000);
 
 }); // end DOMContentLoaded
 </script>
@@ -289,6 +305,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 </body>
 </html>
+
 
 
 
